@@ -24,10 +24,10 @@ jobs:
       REPOSITORYOWNER: ${{ github.repository_owner }}
     steps:
 
-      - name: 📥 Checkout Main
+      - name: 📥 Checkout Branch
         uses: actions/checkout@v6
         with:
-          path: main
+          path: LiquidAndrei
           fetch-depth: 1
 
       - name: 🚫 Configure Repository Blacklist
@@ -68,10 +68,8 @@ jobs:
           set -Eeuo pipefail
 
           rm -rf repostatus
-
           STATUSURL="https://github.com/${{ github.repository }}.git"
           STATUSAPI="repos/${{ github.repository }}/branches/status-page"
-
           echo "🔎 Checking status-page branch..."
 
           # Use GitHub API for Branch Detection
@@ -81,10 +79,9 @@ jobs:
             --silent \
             >/dev/null 2>&1
           then
-
             echo "✔️ Status-Page Branch Exists"
-
             mkdir -p repostatus
+            
             cd repostatus
 
             git init -q
@@ -357,17 +354,13 @@ jobs:
             if [ "$branch" = "oneplus/sm8845" ]; then echo "OnePlus-8845"; return; fi
             if [ "$branch" = "oneplus/sm8850" ]; then echo "OnePlus-8850"; return; fi
 
-            # Generic kernel-manifest branch mapping.
-            # Example: oneplus/sm6375 -> OnePlus-6375.
+            # Generic Kernel-Manifest Branch Mappings
             if [[ "$branch" =~ ^oneplus/(sm|mt)([0-9]{4,5})$ ]]; then
               echo "OnePlus-${BASH_REMATCH[2]}"
               return
             fi
 
-            # Generic parser supports both:
-            #   oneplus/mtXXXX_...
-            #   oneplus_mtXXXX_...
-            # and SM equivalents.
+            # Generic Parser Supports Both SM and MT Equivalents
             if [[ "$branch" =~ ^(oneplus/|oneplus_)?(sm|mt)([0-9]{4,5})_(.+)$ ]]; then
               chipset="${BASH_REMATCH[2]}${BASH_REMATCH[3]}"
               short="${BASH_REMATCH[4]}"
@@ -392,10 +385,8 @@ jobs:
               fi
             fi
 
-            # Normalize branch device slugs before matching so legacy
-            # branches containing OnePlus_11R_5G, etc. are handled.
+            # Normalize Branch Device Slugs Before Matching Legacy Branches
             device="$(printf '%s' "$device" | tr '[:upper:]' '[:lower:]')"
-
             case "$device" in
               nord_ce4_lite_5g) mapped_device="Nord CE4 Lite 5G" ;;
               nord_ce3_lite_5g) mapped_device="Nord CE3 Lite 5G" ;;
@@ -439,48 +430,25 @@ jobs:
               "$version"
           }
 
-          # Determine the summary family.
-          #
-          # Every SM device goes into one SM section.
-          # Every MT device goes into one MT section.
-          #
-          # Example:
-          #
-          # SM8450
-          # SM8650
-          # SM8750
-          # SM8850
-          #
-          # all become:
-          #
-          # OnePlus-SM Devices
-          #
-          # Likewise all MT devices become:
-          #
-          # OnePlus-MT Devices
+          # Determine Summary Family
           mapfamily() {
             case "$1" in
-
               android_kernel_oneplus_sm*|\
               android_kernel_common_oneplus_sm*)
                 echo "SM"
                 ;;
-
               android_kernel_oneplus_mt*|\
               android_kernel_common_oneplus_mt*|\
               android_kernel_4.19_oneplus_mt*)
                 echo "MT"
                 ;;
-
               kernel_manifest)
                 echo "MANIFEST"
                 ;;
-
               *)
                 if printf '%s\n' "$1" |
                   grep -qiE '(sm|mt)[0-9]{4,5}'
                 then
-
                   if printf '%s\n' "$1" |
                     grep -qiE 'sm[0-9]{4,5}'
                   then
@@ -488,14 +456,10 @@ jobs:
                   else
                     echo "MT"
                   fi
-
                 else
-
                   echo "OTHER"
-
                 fi
                 ;;
-
             esac
           }
 
@@ -572,8 +536,7 @@ jobs:
             }
           }'
 
-          echo "🔎 Discovering OnePlusOSS repositories..."
-
+          echo "🔎 Discovering OnePlusOSS Repositories..."
           REPOS="$(
             gh repo list "$ORG" \
               --limit 1000 \
@@ -596,7 +559,7 @@ jobs:
           )"
 
           if [ -z "$REPOS" ]; then
-            echo "❌ Unable to retrieve OnePlusOSS repositories."
+            echo "⚠️ Unable to Retrieve OnePlusOSS Repositories"
             exit 1
           fi
 
@@ -606,14 +569,11 @@ jobs:
               wc -l
           )"
 
-          echo "📊 Found $TOTALREPOS repositories."
-
+          echo "📊 Found $TOTALREPOS Repositories"
           while IFS= read -r repo; do
-
             [ -z "$repo" ] && continue
-
             if explblacklisted "$repo"; then
-              echo "🚫 Skipping blacklisted repository: $repo"
+              echo "🚫 Skipping Blacklisted Repository: $repo"
               continue
             fi
 
@@ -643,19 +603,13 @@ jobs:
             CURSOR=""
             PAGE=0
             FILESCANNED="false"
-
             while true; do
-
               PAGE=$((PAGE + 1))
               RESPONSE=""
               REQUESTOK="false"
-
               for attempt in $(seq 1 "$MAXRETRIES"); do
-
-                echo "  🌐 GraphQL page $PAGE, attempt $attempt/$MAXRETRIES"
-
+                echo "🌐 GraphQL Page $PAGE, Attempt $attempt/$MAXRETRIES"
                 if [ -z "$CURSOR" ]; then
-
                   RESPONSE="$(
                     gh api graphql \
                       -f query="$ACTIVEQUERY" \
@@ -663,9 +617,7 @@ jobs:
                       -f name="$repo" \
                       2>&1
                   )" || true
-
                 else
-
                   RESPONSE="$(
                     gh api graphql \
                       -f query="$ACTIVEQUERY" \
@@ -674,7 +626,6 @@ jobs:
                       -f cursor="$CURSOR" \
                       2>&1
                   )" || true
-
                 fi
 
                 if [ -n "$RESPONSE" ] &&
@@ -685,16 +636,12 @@ jobs:
                    ' <<< "$RESPONSE" \
                    >/dev/null 2>&1
                 then
-
                   REQUESTOK="true"
                   break
-
                 fi
 
-                echo "  ⚠️ GraphQL request failed."
-
+                echo "⚠️ GraphQL Request Failed"
                 if [ -n "$RESPONSE" ]; then
-
                   ERRORS="$(
                     jq -r \
                       '.errors[]?.message // empty' \
@@ -714,24 +661,16 @@ jobs:
                 fi
 
                 if [ "$attempt" -lt "$MAXRETRIES" ]; then
-
                   RETRYWAIT=$((DELAYRETRIES * attempt))
-
-                  echo "  ⏳ Retrying in ${RETRYWAIT}s..."
-
+                  echo "⏳ Retrying in ${RETRYWAIT}s..."
                   sleep "$RETRYWAIT"
-
                 fi
-
               done
 
               if [ "$REQUESTOK" != "true" ]; then
-
-                echo "  ❌ Unable to retrieve page $PAGE for $repo."
-
+                echo "⚠️ Unable to Retrieve Page $PAGE for $repo"
                 FILESCANNED="false"
                 break
-
               fi
 
               PAGENODES="$(
@@ -741,13 +680,11 @@ jobs:
               )"
 
               if [ -n "$PAGENODES" ]; then
-
                 if [ -n "$BRANCHDATA" ]; then
                   BRANCHDATA+=$'\n'
                 fi
 
                 BRANCHDATA+="$PAGENODES"
-
               fi
 
               HASNEXT="$(
@@ -763,36 +700,25 @@ jobs:
               )"
 
               if [ "$HASNEXT" != "true" ]; then
-
                 FILESCANNED="true"
                 break
-
               fi
 
               if [ -z "$NEXTCURSOR" ]; then
-
-                echo "  ❌ Pagination requested but no cursor was returned."
-
+                echo "⚠️ Pagination Requested but No Cursor was Returned"
                 FILESCANNED="false"
                 break
-
               fi
 
               CURSOR="$NEXTCURSOR"
-
             done
 
-            # Never overwrite valid previous state with an incomplete scan.
+            # Never Overwrite Valid Previous State with an Incomplete Scan
             if [ "$FILESCANNED" != "true" ]; then
-
               FAILEDREPOS=$((FAILEDREPOS + 1))
-
-              echo "  ⚠️ Scan failed: $repo"
-
+              echo "⚠️ Scan Failed: $repo"
               if [ "$OLDREPO" = "true" ]; then
-
-                echo "  🛡️ Preserving previous state."
-
+                echo "🔏 Preserving Previous State"
                 OLDREPOSTATE="$(
                   jq -c \
                     --arg repo "$repo" \
@@ -806,38 +732,25 @@ jobs:
                   '.[$repo] = $old' \
                   new-state.json \
                   > tmp.json
-
                 mv tmp.json new-state.json
-
               fi
-
               continue
-
             fi
 
             SCANNEDREPOS=$((SCANNEDREPOS + 1))
-
             if [ "$OLDREPO" = "false" ]; then
-
               NEWREPOS+="- 🆕 **$repo**"$'\n'
-
               DETECTEDCHANGE="true"
-
             fi
 
             printf '<details><summary><b>%s</b></summary>\n\n' "$repo" \
               >> "$TARGETQUERY"
-
             while IFS= read -r row; do
-
               [ -z "$row" ] && continue
-
               BRANCHNAME="$(jq -r '.name // empty' <<< "$row")"
               SHA="$(jq -r '.target.oid // empty' <<< "$row")"
-
               [ -z "$BRANCHNAME" ] && continue
               [ -z "$SHA" ] && continue
-
               MSG="$(
                 jq -r '.target.message // empty' <<< "$row" |
                   head -n1 |
@@ -847,7 +760,6 @@ jobs:
               )"
 
               TOTALBRANCHES=$((TOTALBRANCHES + 1))
-
               OLDVALUE="$(
                 jq -r \
                   --arg repo "$repo" \
@@ -861,7 +773,6 @@ jobs:
               CURRENTVALUE=""
 
               if [ "$repo" = "kernel_manifest" ]; then
-
                 JSONFILE="$(
                   jq -c '
                     (.target.tree.entries // [])
@@ -934,13 +845,9 @@ jobs:
                   )
 
                   printf '\n---\n\n'
-
                 } >> "$TARGETQUERY"
-
                 KERNEL="MANIFEST"
-
               else
-
                 MAKEFILE_TEXT="$(
                   jq -r \
                     '.target.file.object.text // empty' \
@@ -948,7 +855,6 @@ jobs:
                 )"
 
                 if [ -n "$MAKEFILE_TEXT" ]; then
-
                   VERSION="$(
                     printf '%s\n' "$MAKEFILE_TEXT" |
                       grep -oE \
@@ -978,15 +884,11 @@ jobs:
 
                   if [ -n "$VERSION" ] &&
                      [ -n "$PATCHLEVEL" ]; then
-
                     KERNEL="$VERSION.$PATCHLEVEL"
-
                     if [ -n "$SUBLEVEL" ]; then
                       KERNEL+=".${SUBLEVEL}"
                     fi
-
                   fi
-
                 fi
 
                 CURRENTVALUE="$SHA|$KERNEL"
@@ -1006,35 +908,24 @@ jobs:
                   printf '* **Commit SHA:** `%s`\n' "${SHA:0:7}"
                   printf '* **Message:** %s\n\n' "$MSG"
                   printf '%s\n\n' "---"
-
                 } >> "$TARGETQUERY"
-
               fi
 
               if [ "$STATUS" != "✅" ]; then
-
                 DETECTEDCHANGE="true"
-
                 if [ "$STATUS" = "🆕" ]; then
-
                   NEWBRANCHCOUNT=$((NEWBRANCHCOUNT + 1))
-
                   NEWBRANCH+="- ✨ **$repo** (\`$BRANCHNAME\`) → \`$KERNEL\`"$'\n'
-
                 else
-
                   UPDATEDBRANCHCOUNT=$((UPDATEDBRANCHCOUNT + 1))
-
                   UPDATEDBRANCH+="- 🔄 **$repo** (\`$BRANCHNAME\`) → \`$KERNEL\`"$'\n'
-
                 fi
-
               fi
 
-              # Determine family.
+              # Determine Family
               FAMILY="$(mapfamily "$repo")"
 
-              # Determine readable device/platform name.
+              # Determine Readable Device / Platform Names
               DISPLAYPLATFORM="$(mapplatform "$repo")"
 
               # Display only the chipset in the Repo column.
@@ -1072,7 +963,6 @@ jobs:
                 )"
 
                 PLATFORM_ROWS["$FAMILY"]+="${ROW}"$'\n'
-
                 FLATCOUNT["$FAMILY"]=$(( ${FLATCOUNT[$FAMILY]:-0} + 1 ))
                 SUMMARYROWS=$((SUMMARYROWS + 1))
               fi
@@ -1084,24 +974,16 @@ jobs:
                 '.[$repo][$branch] = $value' \
                 new-state.json \
                 > tmp.json
-
               mv tmp.json new-state.json
-
             done <<< "$BRANCHDATA"
-
             printf '</details>\n\n' >> "$TARGETQUERY"
-
           done <<< "$REPOS"
 
           echo
           echo "🧹 Checking deleted repositories and branches..."
-
           while IFS= read -r old_repo; do
-
             [ -z "$old_repo" ] && continue
-
             if explblacklisted "$old_repo"; then
-
               OLDREPOSTATE="$(
                 jq -c \
                   --arg repo "$old_repo" \
@@ -1115,11 +997,8 @@ jobs:
                 '.[$repo] = $old' \
                 new-state.json \
                 > tmp.json
-
               mv tmp.json new-state.json
-
               continue
-
             fi
 
             if jq -e \
@@ -1128,11 +1007,8 @@ jobs:
               new-state.json \
               >/dev/null 2>&1
             then
-
               while IFS= read -r old_branch; do
-
                 [ -z "$old_branch" ] && continue
-
                 if ! jq -e \
                   --arg repo "$old_repo" \
                   --arg branch "$old_branch" \
@@ -1140,14 +1016,10 @@ jobs:
                   new-state.json \
                   >/dev/null 2>&1
                 then
-
                   DELETEDCOUNT=$((DELETEDCOUNT + 1))
                   DETECTEDCHANGE="true"
-
                   DELETEDITEM+="- 🗑️ **Branch Deleted:** $old_repo (\`$old_branch\`)"$'\n'
-
                 fi
-
               done < <(
                 jq -r \
                   --arg repo "$old_repo" \
@@ -1156,20 +1028,14 @@ jobs:
                   2>/dev/null ||
                   true
               )
-
             else
-
               DELETEDCOUNT=$((DELETEDCOUNT + 1))
               DETECTEDCHANGE="true"
-
               DELETEDITEM+="- 🗑️ **Repository Deleted:** $old_repo"$'\n'
-
             fi
-
           done < <(
             jq -r 'keys[]' "$STATEFILE"
           )
-
           mv new-state.json "$STATEFILE"
 
           {
@@ -1205,20 +1071,19 @@ jobs:
 
             echo "| Metric | Value |"
             echo "| :--- | ---: |"
-            echo "| Repositories discovered | $TOTALREPOS |"
-            echo "| Repositories scanned | $SCANNEDREPOS |"
-            echo "| Repositories failed | $FAILEDREPOS |"
-            echo "| Branches scanned | $TOTALBRANCHES |"
-            echo "| New branches | $NEWBRANCHCOUNT |"
-            echo "| Updated branches | $UPDATEDBRANCHCOUNT |"
-            echo "| Deleted items | $DELETEDCOUNT |"
+            echo "| Repositories Discovered | $TOTALREPOS |"
+            echo "| Repositories Scanned | $SCANNEDREPOS |"
+            echo "| Repositories Failed | $FAILEDREPOS |"
+            echo "| Branches Scanned | $TOTALBRANCHES |"
+            echo "| New Branches | $NEWBRANCHCOUNT |"
+            echo "| Updated Branches | $UPDATEDBRANCHCOUNT |"
+            echo "| Deleted Items | $DELETEDCOUNT |"
             echo
 
             echo "### 🌿 Branch Status & Kernel Versions"
             echo
 
             if [ -n "${PLATFORM_ROWS[SM]:-}" ]; then
-
               COUNT="${FLATCOUNT[SM]:-0}"
 
               echo "#### 📱 OnePlus-SM Devices"
@@ -1227,19 +1092,16 @@ jobs:
               echo "> **$COUNT branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Project | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
 
-              # Sort SM rows by platform and repository.
+              # Sort SM Rows by Platform and Repository
               printf '%s' "${PLATFORM_ROWS[SM]}" |
                 sort -t'|' -k3,3V -k2,2
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[MT]:-}" ]; then
-
               COUNT="${FLATCOUNT[MT]:-0}"
 
               echo "#### 📱 OnePlus-MT Devices"
@@ -1248,77 +1110,63 @@ jobs:
               echo "> **$COUNT branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Project | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
 
-              # Sort MT rows by platform and repository.
+              # Sort MT Rows by Platform and Repository
               printf '%s' "${PLATFORM_ROWS[MT]}" |
                 sort -t'|' -k3,3V -k2,2
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[MANIFEST]:-}" ]; then
-
               COUNT="${FLATCOUNT[MANIFEST]:-0}"
 
               echo "#### 📋 Kernel Manifest"
               echo
 
-              echo "> **$COUNT branch(s)**"
+              echo "> **$COUNT Branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Project | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
-
               printf '%s' "${PLATFORM_ROWS[MANIFEST]}"
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[OTHER]:-}" ]; then
-
               COUNT="${FLATCOUNT[OTHER]:-0}"
 
               echo "#### 📦 Other"
               echo
 
-              echo "> **$COUNT branch(s)**"
+              echo "> **$COUNT Branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Project | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
-
               printf '%s' "${PLATFORM_ROWS[OTHER]}"
-
               echo
-
             fi
 
             if [ "$SUMMARYROWS" -ge "$SUMMARYLIMIT" ]; then
-
               echo
-              echo "> ⚠️ Summary limited to the first $SUMMARYLIMIT branches."
-              echo "> Full data is available on the \`status-page\` branch."
-
+              echo "> ⚠️ Summary Limited to the First $SUMMARYLIMIT Branches"
+              echo "> Complete Data is Available on the \`status-page\` Branch"
             fi
-
           } > "$GITHUB_STEP_SUMMARY"
-
           echo "changes_found=$DETECTEDCHANGE" >> "$GITHUB_OUTPUT"
 
           echo
           echo "📊 Scan Complete"
-          echo "Repositories discovered : $TOTALREPOS"
-          echo "Repositories scanned    : $SCANNEDREPOS"
-          echo "Repositories failed     : $FAILEDREPOS"
-          echo "Branches scanned        : $TOTALBRANCHES"
-          echo "New branches            : $NEWBRANCHCOUNT"
-          echo "Updated branches        : $UPDATEDBRANCHCOUNT"
-          echo "Deleted items           : $DELETEDCOUNT"
-          echo "Changes detected        : $DETECTEDCHANGE"
+          echo "Repositories Discovered : $TOTALREPOS"
+          echo "Repositories Scanned    : $SCANNEDREPOS"
+          echo "Repositories Failed     : $FAILEDREPOS"
+          echo "Branches Scanned        : $TOTALBRANCHES"
+          echo "New Branches            : $NEWBRANCHCOUNT"
+          echo "Updated Branches        : $UPDATEDBRANCHCOUNT"
+          echo "Deleted Items           : $DELETEDCOUNT"
+          echo "Changes Detected        : $DETECTEDCHANGE"
 
       - name: 🔔 Manage Notification Issue
         if: steps.scanner.outputs.changes_found == 'true'
@@ -1336,9 +1184,7 @@ jobs:
             true
 
           DATETITLE="Kernel Updates - $(date -u +'%Y-%m-%d')"
-
           RUNURL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
           if [ "$REPOSITORYOWNER" != "WildKernels" ]; then
             TARGET="@${REPOSITORYOWNER}"
           else
@@ -1365,7 +1211,6 @@ jobs:
           )"
 
           if [ -z "$ISSUENUMBER" ]; then
-
             BODY="$(
               printf '%s\n\n%s\n\n---\n🔗 [View Action Summary](%s)' \
                 "Hi $TARGET," \
@@ -1378,9 +1223,7 @@ jobs:
               --title "$DATETITLE" \
               --body "$BODY" \
               --label "notification"
-
           else
-
             BODY="$(
               printf '%s\n\n%s\n\n---\n🔗 [View Action Summary](%s)' \
                 "### 🔄 New Activity Detected ($(date -u +'%H:%M') UTC)" \
@@ -1392,7 +1235,6 @@ jobs:
               "$ISSUENUMBER" \
               --repo "${{ github.repository }}" \
               --body "$BODY"
-
           fi
 
       - name: 📄 Update Status Branch
@@ -1403,45 +1245,35 @@ jobs:
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
           rm -rf repostatus-final
-
           mkdir -p repostatus-final
+          
           cd repostatus-final
 
           git init -q
-
           STATUSURL="https://github.com/${{ github.repository }}.git"
           STATUSAPI="repos/${{ github.repository }}/branches/status-page"
-
           git remote add origin "$STATUSURL"
+          echo "🔎 Checking Status-Page Branch..."
 
-          echo "🔎 Checking status-page branch..."
-
-          # Use gh api instead of git ls-remote.
+          # Use GH API Instead of Git LS-Remote
           if gh api \
             "$STATUSAPI" \
             --silent \
             >/dev/null 2>&1
           then
-
-            echo "✅ status-page branch exists."
-
-            # Configure Git authentication through GitHub CLI.
+            echo "♻️ Status-Page Branch Exists"
+            # Configure Git Authentication Through GitHub CLI
             gh auth setup-git
-
             git fetch \
               --quiet \
               origin \
               refs/heads/status-page
-
             git checkout \
               --quiet \
               -B status-page \
               FETCH_HEAD
-
           else
-
             APIERROR="$(
               gh api \
                 "$STATUSAPI" \
@@ -1454,25 +1286,21 @@ jobs:
               grep -qiE \
                 'Bad credentials|401|403|forbidden|Resource not accessible'
             then
-
-              echo "❌ Unable to access status-page."
+              echo "⚠️ Unable to Access Status-Page"
               printf '%s\n' "$APIERROR"
               exit 1
 
             fi
 
-            echo "ℹ️ status-page does not exist."
-            echo "ℹ️ Creating status-page branch."
-
+            echo "ℹ️ Status-Page does Not Exist"
+            echo "ℹ️ Creating Status-Page Branch"
             git checkout \
               --quiet \
               --orphan \
               status-page
-
             git rm -rf . \
               >/dev/null 2>&1 ||
               true
-
           fi
 
           {
@@ -1489,21 +1317,15 @@ jobs:
             echo "---"
             echo
             cat ../local-summary.md
-
           } > README.md
 
           cp \
             "../main/${STATEFILE}" \
             "$STATEFILE"
-
           git add README.md "$STATEFILE"
-
           if git diff --cached --quiet; then
-
-            echo "ℹ️ No status-page changes detected."
-
+            echo "ℹ️ No Status-Page Changes Detected"
             exit 0
-
           fi
 
           git commit \
@@ -1521,9 +1343,9 @@ jobs:
             origin \
             HEAD:status-page
           then
-            echo "✅ status-page updated successfully."
+            echo "🏆 Status-Page Updated Successfully"
           else
-            echo "❌ Failed to push status-page."
-            echo "ℹ️ Verify that workflow permissions include: contents: write."
+            echo "⚠️ Failed to Push Status-Page"
+            echo "🧾 Verify that Workflow Permissions Include: Contents: Write"
             exit 1
           fi
