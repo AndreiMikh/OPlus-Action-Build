@@ -53,6 +53,8 @@ jobs:
           android_kernel_oneplus_sm7250
           android_kernel_oneplus_sdm845
           android_kernel_oneplus_sm8150
+          android_kernel_5.10_oneplus_mt6983
+          android_kernel_5.10_oneplus_mt6895
           android_kernel_4.19_oneplus_mt6765
           android_kernel_oneplus_sm8250
           android_kernel_oneplus_mt6893
