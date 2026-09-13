@@ -1,23 +1,18 @@
 name: 🍃 Monitor
-
 on:
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
-
 concurrency:
   group: oneplusoss-kernel-monitor
   cancel-in-progress: false
-
 jobs:
   monitor:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
       issues: write
       actions: write
-
     env:
       ORG: "OnePlusOSS"
       STATEFILE: "old-state.json"
@@ -27,7 +22,6 @@ jobs:
       DELAYRETRIES: 5
       SUMMARYLIMIT: 5000
       REPOSITORYOWNER: ${{ github.repository_owner }}
-
     steps:
 
       - name: 📥 Checkout Main
@@ -80,15 +74,15 @@ jobs:
 
           echo "🔎 Checking status-page branch..."
 
-          # Use GitHub API for branch detection.
-          # This avoids git credential prompts from ls-remote.
+          # Use GitHub API for Branch Detection
+          # This Avoids Git Credential Prompts from LS-Remote
           if gh api \
             "$STATUSAPI" \
             --silent \
             >/dev/null 2>&1
           then
 
-            echo "✅ status-page branch exists."
+            echo "✔️ Status-Page Branch Exists"
 
             mkdir -p repostatus
             cd repostatus
@@ -96,15 +90,13 @@ jobs:
             git init -q
             git remote add origin "$STATUSURL"
 
-            # Configure Git to use the authenticated GitHub CLI token.
-            # This avoids unauthenticated HTTPS prompts from git.
+            # Configure Git to Use the Authenticated GitHub CLI Token
+            # This Avoids Unauthenticated HTTPS Prompts from Git
             gh auth setup-git
-
             git fetch \
               --quiet \
               origin \
               refs/heads/status-page
-
             git checkout \
               --quiet \
               -B status-page \
@@ -113,23 +105,15 @@ jobs:
             cd ..
 
             if [ -f "repostatus/$STATEFILE" ]; then
-
               cp \
                 "repostatus/$STATEFILE" \
                 "main/$STATEFILE"
-
-              echo "✅ Existing state restored."
-
+              echo "🛠️ Existing State Restored"
             else
-
-              echo "ℹ️ status-page exists but $STATEFILE was not found."
-
+              echo "ℹ️ Status-Page Exists but $STATEFILE was Not Found"
               echo "{}" > "main/$STATEFILE"
-
             fi
-
           else
-
             APIERROR="$(
               gh api \
                 "$STATUSAPI" \
@@ -138,47 +122,36 @@ jobs:
                 true
             )"
 
-            # Never treat an authentication/permission failure
-            # as a missing branch.
+            # Never Treat an Authentication / Permission Failure as a Missing Branch
             if printf '%s\n' "$APIERROR" |
               grep -qiE \
                 'Bad credentials|401|403|forbidden|Resource not accessible'
             then
-
-              echo "❌ GitHub token cannot access status-page."
+              echo "⚠️ GitHub Token Cannot Access Status-Page"
               printf '%s\n' "$APIERROR"
               exit 1
-
             fi
 
-            echo "ℹ️ status-page does not exist."
-            echo "ℹ️ Starting with empty state."
-
+            echo "ℹ️ Status-Page does Not Exist"
+            echo "ℹ️ Starting with Empty State"
             echo "{}" > "main/$STATEFILE"
-
             mkdir -p repostatus
-
           fi
 
-          # Validate state JSON.
+          # Validate State JSON
           if ! jq -e \
             'type == "object"' \
             "main/$STATEFILE" \
             >/dev/null 2>&1
           then
-
-            echo "⚠️ Invalid state file detected."
-
+            echo "⚠️ Invalid State File Detected"
             cp \
               "main/$STATEFILE" \
               "main/${STATEFILE}.invalid.$(date +%s)" \
               2>/dev/null ||
               true
-
             echo "{}" > "main/$STATEFILE"
-
-            echo "✅ State reset."
-
+            echo "♻️ State Reset"
           fi
 
       - name: 🔍 Process OnePlusOSS Repositories
@@ -191,16 +164,13 @@ jobs:
 
           echo "### 📓 Kernel Manifests Report" > ../manifest_summary.md
           echo "### 🛠 Kernel Trees Report" > ../local-summary.md
-
           : > notification.md
           : > ../summary-rows.md
-
           if [ ! -f "$STATEFILE" ] || [ ! -s "$STATEFILE" ]; then
             echo "{}" > "$STATEFILE"
           fi
 
           echo "{}" > new-state.json
-
           TOTALREPOS=0
           SCANNEDREPOS=0
           FAILEDREPOS=0
@@ -214,103 +184,73 @@ jobs:
           NEWBRANCH=""
           UPDATEDBRANCH=""
           DELETEDITEM=""
-
           DETECTEDCHANGE="false"
 
-          # Summary groups.
+          # Summary Groups
           declare -A PLATFORM_ROWS
           declare -A FLATCOUNT
-
           explblacklisted() {
             local repo="$1"
-
             printf '%s\n' "$BLREPOS" |
               grep -Fqx -- "$repo"
           }
 
-          # Map repositories to their display platform.
-          #
-          # This follows the same style as mapdevice().
-          #
-          # Explicit mappings can be added whenever a repository
-          # needs a custom display name.
-          #
-          # Generic SM/MT repositories automatically fall back to
-          # their detected chipset.
+          # Map Repositories to their Display Platform
           mapplatform() {
             case "$1" in
-
               android_kernel_oneplus_mt6893)
                 echo "OnePlus-MT6893"
                 ;;
-
               android_kernel_oneplus_mt6877)
                 echo "OnePlus-MT6877"
                 ;;
-
               android_kernel_4.19_oneplus_mt6765)
                 echo "OnePlus-MT6765"
                 ;;
-
               android_kernel_oneplus_sm4250)
                 echo "OnePlus-SM4250"
                 ;;
-
               android_kernel_oneplus_sm4350)
                 echo "OnePlus-SM4350"
                 ;;
-
               android_kernel_oneplus_sm6350)
                 echo "OnePlus-SM6350"
                 ;;
-
               android_kernel_oneplus_sm7325)
                 echo "OnePlus-SM7325"
                 ;;
-
               android_kernel_oneplus_sm7225)
                 echo "OnePlus-SM7225"
                 ;;
-
               android_kernel_oneplus_sm8150)
                 echo "OnePlus-SM8150"
                 ;;
-
               android_kernel_oneplus_sm8250)
                 echo "OnePlus-SM8250"
                 ;;
-
               android_kernel_oneplus_sm8350)
                 echo "OnePlus-SM8350"
                 ;;
-
               android_kernel_oneplus_sm8450)
                 echo "OnePlus-SM8450"
                 ;;
-
               android_kernel_oneplus_sm8550)
                 echo "OnePlus-SM8550"
                 ;;
-
               android_kernel_oneplus_sm8650)
                 echo "OnePlus-SM8650"
                 ;;
-
               android_kernel_oneplus_sm8750)
                 echo "OnePlus-SM8750"
                 ;;
-
               android_kernel_oneplus_sm8850)
                 echo "OnePlus-SM8850"
                 ;;
-
               kernel_manifest)
                 echo "OnePlusOSS"
                 ;;
-
               *)
                 local platform=""
-
                 platform="$(
                   printf '%s\n' "$1" |
                     grep -oEi '(sm|mt)[0-9]{4,5}' |
@@ -325,24 +265,10 @@ jobs:
                   echo "OTHER"
                 fi
                 ;;
-
             esac
           }
 
-          # Map OnePlus branch names to compact device/version names
-          # for the GitHub Actions Summary.
-          #
-          # Examples:
-          # oneplus/sm6375_b_16.0.0_nord_ce4_lite_5g
-          #   -> Nord CE4 Lite 5G-B-16.0.0
-          #
-          # oneplus/sm8650_b_16.0.0_ace_3_pro
-          #   -> Ace 3 Pro-B-16.0.0
-          #
-          # Explicit mappings are checked first. Unknown OnePlus
-          # branches then use the generic parser below, so new
-          # device branches do not remain as raw branch names.
-
+          # Map OnePlus Branch Names to Compact Device / Version Names for Git Actions Summary
           mapbranch() {
             local branch="$1"
             local short="${branch#oneplus/}"
@@ -351,9 +277,8 @@ jobs:
             local device=""
             local mapped_device=""
             local chipset=""
-
             case "$branch" in
-              # Current Android 14/15/16 branch mappings.
+              # Current Android 14/15/16 Branch Mappings
               oneplus/sm6375_b_16.0.0_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-B-16.0.0"; return ;;
               oneplus/sm6375_v_15.0.0_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-V-15.0.0"; return ;;
               oneplus/sm6375_u_14.0.1_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-U-14.0.1"; return ;;
@@ -369,19 +294,17 @@ jobs:
               oneplus/sm7675_v_15.0.0_nord_4) echo "Nord 4-V-15.0.0"; return ;;
               oneplus/sm7675_u_14.0.1_oneplus_ace3v) echo "Ace 3V-U-14.0.1"; return ;;
               oneplus/sm7675_u_14.1.0_oneplus_nord4) echo "Nord 4-U-14.1.0"; return ;;
-              # Legacy SM8550 branches.
+              # Legacy SM8550 Branches
               oneplus/sm8550_t_13.1.0_oneplus11) echo "OnePlus 11-T-13.1.0"; return ;;
               oneplus/sm8550_t_13.1_ace2pro) echo "Ace 2 Pro-T-13.1"; return ;;
               oneplus/sm8550_t_13.2_open) echo "Open-T-13.2"; return ;;
               oneplus_sm8550_t_13.0_oneplus_11) echo "OnePlus 11-T-13.0"; return ;;
-
-              # Legacy SM8475 branches.
+              # Legacy SM8475 Branches
               oneplus/sm8475_s_12.1_oneplus_10t_5g) echo "OnePlus 10T 5G-S-12.1"; return ;;
               oneplus/sm8475_t_13.0.0_ace_pro) echo "Ace Pro-T-13.0.0"; return ;;
               oneplus/sm8475_t_13.1.0_11r_5g) echo "OnePlus 11R 5G-T-13.1.0"; return ;;
               oneplus_sm8475_t_13.0_oneplus_11R_5G) echo "OnePlus 11R 5G-T-13.0"; return ;;
-
-              # Legacy SM8450 branches.
+              # Legacy SM8450 Branches
               oneplus/sm8450_s_12.1_10_pro) echo "OnePlus 10 Pro-S-12.1"; return ;;
               oneplus/sm8450_t_13.0_10pro) echo "OnePlus 10 Pro-T-13.0"; return ;;
               oneplus/sm8450_t_13.1.0_10pro) echo "OnePlus 10 Pro-T-13.1.0"; return ;;
@@ -396,7 +319,7 @@ jobs:
               oneplus/sm8750_b_16.0.0_pad_3) echo "Pad 3-B-16.0.0"; return ;;
               oneplus/sm8750_b_16.0.0_oneplus_12) echo "OnePlus 12-B-16.0.0"; return ;;
 
-              # Legacy MT6895 branch names.
+              # Legacy MT6895 Branch Names
               10r-U-14.0.0) echo "OnePlus 10R-U-14.0.0"; return ;;
               Ace\ Race-U-14.0.0) echo "Ace Race-U-14.0.0"; return ;;
               Ace\ Race-V-15.0.0) echo "Ace Race-V-15.0.0"; return ;;
