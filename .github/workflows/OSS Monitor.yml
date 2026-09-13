@@ -27,7 +27,7 @@ jobs:
       - name: 📥 Checkout Branch
         uses: actions/checkout@v6
         with:
-          path: LiquidAndrei
+          path: main
           fetch-depth: 1
 
       - name: 🚫 Configure Repository Blacklist
