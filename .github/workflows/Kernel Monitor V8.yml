@@ -228,89 +228,65 @@ jobs:
               grep -Fqx -- "$repo"
           }
 
-          # Map repositories to their display platform.
-          #
-          # This follows the same style as mapdevice().
-          #
-          # Explicit mappings can be added whenever a repository
-          # needs a custom display name.
-          #
-          # Generic SM/MT repositories automatically fall back to
-          # their detected chipset.
+          # Map Repositories to their Display Platform
+          # This Follows the Same Style as Map Device
+          # Explicit Mappings can be Added Whenever a Repository Needs a Custom Display Name
+          # Generic SM/MT repositories automatically fall back to Detected Chipset
           mapplatform() {
             case "$1" in
-
               android_kernel_oneplus_mt6893)
                 echo "OnePlus-MT6893"
                 ;;
-
               android_kernel_oneplus_mt6877)
                 echo "OnePlus-MT6877"
                 ;;
-
               android_kernel_4.19_oneplus_mt6765)
                 echo "OnePlus-MT6765"
                 ;;
-
               android_kernel_oneplus_sm4250)
                 echo "OnePlus-SM4250"
                 ;;
-
               android_kernel_oneplus_sm4350)
                 echo "OnePlus-SM4350"
                 ;;
-
               android_kernel_oneplus_sm6350)
                 echo "OnePlus-SM6350"
                 ;;
-
               android_kernel_oneplus_sm7325)
                 echo "OnePlus-SM7325"
                 ;;
-
               android_kernel_oneplus_sm7225)
                 echo "OnePlus-SM7225"
                 ;;
-
               android_kernel_oneplus_sm8150)
                 echo "OnePlus-SM8150"
                 ;;
-
               android_kernel_oneplus_sm8250)
                 echo "OnePlus-SM8250"
                 ;;
-
               android_kernel_oneplus_sm8350)
                 echo "OnePlus-SM8350"
                 ;;
-
               android_kernel_oneplus_sm8450)
                 echo "OnePlus-SM8450"
                 ;;
-
               android_kernel_oneplus_sm8550)
                 echo "OnePlus-SM8550"
                 ;;
-
               android_kernel_oneplus_sm8650)
                 echo "OnePlus-SM8650"
                 ;;
-
               android_kernel_oneplus_sm8750)
                 echo "OnePlus-SM8750"
                 ;;
-
               android_kernel_oneplus_sm8850)
                 echo "OnePlus-SM8850"
                 ;;
-
               kernel_manifest)
-                echo "OnePlusOSS"
+                echo "Kernel Manifest"
                 ;;
-
               *)
                 local platform=""
-
                 platform="$(
                   printf '%s\n' "$1" |
                     grep -oEi '(sm|mt)[0-9]{4,5}' |
@@ -325,24 +301,10 @@ jobs:
                   echo "OTHER"
                 fi
                 ;;
-
             esac
           }
 
-          # Map OnePlus branch names to compact device/version names
-          # for the GitHub Actions Summary.
-          #
-          # Examples:
-          # oneplus/sm6375_b_16.0.0_nord_ce4_lite_5g
-          #   -> Nord CE4 Lite 5G-B-16.0.0
-          #
-          # oneplus/sm8650_b_16.0.0_ace_3_pro
-          #   -> Ace 3 Pro-B-16.0.0
-          #
-          # Explicit mappings are checked first. Unknown OnePlus
-          # branches then use the generic parser below, so new
-          # device branches do not remain as raw branch names.
-
+          # Map OnePlus Branch Names to Compact Device / Version Names for Github Actions Summary
           mapbranch() {
             local branch="$1"
             local short="${branch#oneplus/}"
@@ -354,97 +316,93 @@ jobs:
 
             case "$branch" in
               # Current Android 14/15/16 branch mappings.
-              oneplus/sm6375_b_16.0.0_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-B-16.0.0"; return ;;
-              oneplus/sm6375_v_15.0.0_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-V-15.0.0"; return ;;
-              oneplus/sm6375_u_14.0.1_nord_ce4_lite_5g) echo "Nord CE4 Lite 5G-U-14.0.1"; return ;;
-              oneplus/sm6375_v_15.0.0_nord_ce3_lite_5g) echo "Nord CE3 Lite 5G-V-15.0.0"; return ;;
-              oneplus/sm7550_b_16.0.0_nord_ce4) echo "Nord CE4-B-16.0.0"; return ;;
-              oneplus/sm7550_v_15.0.0_nord_ce4) echo "Nord CE4-V-15.0.0"; return ;;
-              oneplus/sm7550_u_14.0.1_oneplus_nord_ce4) echo "Nord CE4-U-14.0.1"; return ;;
-              oneplus/sm7635_b_16.0.0_nord_ce6) echo "Nord CE6-B-16.0.0"; return ;;
-              oneplus/sm7635_b_16.0.0_turbo_6v) echo "Turbo 6V-B-16.0.0"; return ;;
-              oneplus/sm7675_b_16.0.0_ace_3v) echo "Ace 3V-B-16.0.0"; return ;;
-              oneplus/sm7675_b_16.0.0_nord_4) echo "Nord 4-B-16.0.0"; return ;;
-              oneplus/sm7675_v_15.0.0_ace_3v) echo "Ace 3V-V-15.0.0"; return ;;
-              oneplus/sm7675_v_15.0.0_nord_4) echo "Nord 4-V-15.0.0"; return ;;
-              oneplus/sm7675_u_14.0.1_oneplus_ace3v) echo "Ace 3V-U-14.0.1"; return ;;
-              oneplus/sm7675_u_14.1.0_oneplus_nord4) echo "Nord 4-U-14.1.0"; return ;;
+              oneplus/sm6375_b_16.0.0_nord_ce4_lite_5g) echo "NordCE4 Lite 5G-B16.0.0"; return ;;
+              oneplus/sm6375_v_15.0.0_nord_ce4_lite_5g) echo "NordCE4 Lite 5G-V15.0.0"; return ;;
+              oneplus/sm6375_u_14.0.1_nord_ce4_lite_5g) echo "NordCE4 Lite 5G-U14.0.1"; return ;;
+              oneplus/sm6375_v_15.0.0_nord_ce3_lite_5g) echo "NordCE3 Lite 5G-V15.0.0"; return ;;
+              oneplus/sm7550_b_16.0.0_nord_ce4) echo "NordCE4-B16.0.0"; return ;;
+              oneplus/sm7550_v_15.0.0_nord_ce4) echo "NordCE4-V15.0.0"; return ;;
+              oneplus/sm7550_u_14.0.1_oneplus_nord_ce4) echo "NordCE4-U14.0.1"; return ;;
+              oneplus/sm7635_b_16.0.0_nord_ce6) echo "NordCE6-B16.0.0"; return ;;
+              oneplus/sm7635_b_16.0.0_turbo_6v) echo "Turbo6V-B16.0.0"; return ;;
+              oneplus/sm7675_b_16.0.0_ace_3v) echo "Ace3V-B16.0.0"; return ;;
+              oneplus/sm7675_b_16.0.0_nord_4) echo "Nord4-B16.0.0"; return ;;
+              oneplus/sm7675_v_15.0.0_ace_3v) echo "Ace3V-V15.0.0"; return ;;
+              oneplus/sm7675_v_15.0.0_nord_4) echo "Nord4-V15.0.0"; return ;;
+              oneplus/sm7675_u_14.0.1_oneplus_ace3v) echo "Ace3V-U14.0.1"; return ;;
+              oneplus/sm7675_u_14.1.0_oneplus_nord4) echo "Nord4-U14.1.0"; return ;;
               # Legacy SM8550 branches.
-              oneplus/sm8550_t_13.1.0_oneplus11) echo "OnePlus 11-T-13.1.0"; return ;;
-              oneplus/sm8550_t_13.1_ace2pro) echo "Ace 2 Pro-T-13.1"; return ;;
-              oneplus/sm8550_t_13.2_open) echo "Open-T-13.2"; return ;;
-              oneplus_sm8550_t_13.0_oneplus_11) echo "OnePlus 11-T-13.0"; return ;;
+              oneplus/sm8550_t_13.1.0_oneplus11) echo "11-T13.1.0"; return ;;
+              oneplus/sm8550_t_13.1_ace2pro) echo "Ace2 Pro-T13.1.0"; return ;;
+              oneplus/sm8550_t_13.2_open) echo "Open-T13.2.0"; return ;;
+              oneplus_sm8550_t_13.0_oneplus_11) echo "11-T13.0.0"; return ;;
 
               # Legacy SM8475 branches.
-              oneplus/sm8475_s_12.1_oneplus_10t_5g) echo "OnePlus 10T 5G-S-12.1"; return ;;
-              oneplus/sm8475_t_13.0.0_ace_pro) echo "Ace Pro-T-13.0.0"; return ;;
-              oneplus/sm8475_t_13.1.0_11r_5g) echo "OnePlus 11R 5G-T-13.1.0"; return ;;
-              oneplus_sm8475_t_13.0_oneplus_11R_5G) echo "OnePlus 11R 5G-T-13.0"; return ;;
+              oneplus/sm8475_s_12.1_oneplus_10t_5g) echo "10T 5G-S12.1.0"; return ;;
+              oneplus/sm8475_t_13.0.0_ace_pro) echo "Ace Pro-T13.0.0"; return ;;
+              oneplus/sm8475_t_13.1.0_11r_5g) echo "11R 5G-T13.1.0"; return ;;
+              oneplus_sm8475_t_13.0_oneplus_11R_5G) echo "11R 5G-T13.0.0"; return ;;
 
               # Legacy SM8450 branches.
-              oneplus/sm8450_s_12.1_10_pro) echo "OnePlus 10 Pro-S-12.1"; return ;;
-              oneplus/sm8450_t_13.0_10pro) echo "OnePlus 10 Pro-T-13.0"; return ;;
-              oneplus/sm8450_t_13.1.0_10pro) echo "OnePlus 10 Pro-T-13.1.0"; return ;;
+              oneplus/sm8450_s_12.1_10_pro) echo "10 Pro-S12.1.0"; return ;;
+              oneplus/sm8450_t_13.0_10pro) echo "10 Pro-T13.0.0"; return ;;
+              oneplus/sm8450_t_13.1.0_10pro) echo "10 Pro-T13.1.0"; return ;;
 
-              oneplus/sm8650_b_16.0.0_ace_3_pro) echo "Ace 3 Pro-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_oneplus_13) echo "OnePlus 13-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_oneplus_13s) echo "OnePlus 13S-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_oneplus_13t) echo "OnePlus 13T-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_ace_5_pro) echo "Ace 5 Pro-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_ace_6) echo "Ace 6-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_pad_2_pro) echo "Pad 2 Pro-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_pad_3) echo "Pad 3-B-16.0.0"; return ;;
-              oneplus/sm8750_b_16.0.0_oneplus_12) echo "OnePlus 12-B-16.0.0"; return ;;
+              oneplus/sm8650_b_16.0.0_ace_3_pro) echo "Ace3 Pro-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_oneplus_13) echo "13-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_oneplus_13s) echo "13S-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_oneplus_13t) echo "13T-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_ace_5_pro) echo "Ace5 Pro-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_ace_6) echo "Ace6-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_pad_2_pro) echo "Pad2 Pro-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_pad_3) echo "Pad3-B16.0.0"; return ;;
+              oneplus/sm8750_b_16.0.0_oneplus_12) echo "12-B16.0.0"; return ;;
 
               # Legacy MT6895 branch names.
-              10r-U-14.0.0) echo "OnePlus 10R-U-14.0.0"; return ;;
-              Ace\ Race-U-14.0.0) echo "Ace Race-U-14.0.0"; return ;;
-              Ace\ Race-V-15.0.0) echo "Ace Race-V-15.0.0"; return ;;
-              Ace-U-14.0.0) echo "Ace-U-14.0.0"; return ;;
-              Ace-V-15.0.0) echo "Ace-V-15.0.0"; return ;;
-              Oneplus\ 10r-V-15.0.0) echo "OnePlus 10R-V-15.0.0"; return ;;
-              mt6895_t_13.1.0_oneplus_ace) echo "Ace-T-13.1.0"; return ;;
-              oneplus/mt6895_s_12.1_oneplus_10r) echo "OnePlus 10R-S-12.1"; return ;;
-              oneplus/mt6895_s_12.1_oneplus_ace_race) echo "Ace Race-S-12.1"; return ;;
-              oneplus/mt6895_t_13.0.0) echo "MT6895-T-13.0.0"; return ;;
-              oneplus/mt6895_t_13.0.0_ace_racing) echo "Ace Racing-T-13.0.0"; return ;;
+              10r-U-14.0.0) echo "10R-U14.0.0"; return ;;
+              Ace\ Race-U-14.0.0) echo "AceRace-U14.0.0"; return ;;
+              Ace\ Race-V-15.0.0) echo "AceRace-V15.0.0"; return ;;
+              Ace-U-14.0.0) echo "Ace-U14.0.0"; return ;;
+              Ace-V-15.0.0) echo "Ace-V15.0.0"; return ;;
+              Oneplus\ 10r-V-15.0.0) echo "10R-V15.0.0"; return ;;
+              mt6895_t_13.1.0_oneplus_ace) echo "Ace-T13.1.0"; return ;;
+              oneplus/mt6895_s_12.1_oneplus_10r) echo "10R-S12.1.0"; return ;;
+              oneplus/mt6895_s_12.1_oneplus_ace_race) echo "AceRace-S12.1.0"; return ;;
+              oneplus/mt6895_t_13.0.0) echo "MT6895-T13.0.0"; return ;;
+              oneplus/mt6895_t_13.0.0_ace_racing) echo "AceRacing-T13.0.0"; return ;;
 
               # Legacy MT6983 branch names.
-              oneplus/mt6983_t_13.0_oneplus_ace_2v) echo "Ace 2V-T-13.0"; return ;;
-              oneplus/mt6983_t_13.1.0_onepluspad) echo "OnePlus Pad-T-13.1.0"; return ;;
-              oneplus/mt6983_t_13.1_oneplus_nord_3_5g) echo "Nord 3 5G-T-13.1"; return ;;
-              oneplus_mt6983_u_14.0.0_nord_3_5g) echo "Nord 3 5G-U-14.0.0"; return ;;
-              oneplus_mt6983_u_14.0.0_oneplus_ace_2v) echo "Ace 2V-U-14.0.0"; return ;;
-              Ace\ 2v-U-14.0.0) echo "OnePlus Ace 2V-U-14.0.0"; return ;;
+              oneplus/mt6983_t_13.0_oneplus_ace_2v) echo "Ace2V-T13.0.0"; return ;;
+              oneplus/mt6983_t_13.1.0_onepluspad) echo "Pad-T13.1.0"; return ;;
+              oneplus/mt6983_t_13.1_oneplus_nord_3_5g) echo "Nord3 5G-T13.1.0"; return ;;
+              oneplus_mt6983_u_14.0.0_nord_3_5g) echo "Nord3 5G-U14.0.0"; return ;;
+              oneplus_mt6983_u_14.0.0_oneplus_ace_2v) echo "Ace2V-U14.0.0"; return ;;
+              Ace\ 2v-U-14.0.0) echo "OnePlus Ace2V-U14.0.0"; return ;;
             esac
 
             # Kernel manifest branches are chipset manifests rather than
             # device kernel branches.
-            if [ "$branch" = "oneplus/sm6375" ]; then echo "OnePlus-6375"; return; fi
-            if [ "$branch" = "oneplus/sm7550" ]; then echo "OnePlus-7550"; return; fi
-            if [ "$branch" = "oneplus/sm7635" ]; then echo "OnePlus-7635"; return; fi
-            if [ "$branch" = "oneplus/sm7675" ]; then echo "OnePlus-7675"; return; fi
-            if [ "$branch" = "oneplus/sm8450" ]; then echo "OnePlus-8450"; return; fi
-            if [ "$branch" = "oneplus/sm8475" ]; then echo "OnePlus-8475"; return; fi
-            if [ "$branch" = "oneplus/sm8550" ]; then echo "OnePlus-8550"; return; fi
-            if [ "$branch" = "oneplus/sm8635" ]; then echo "OnePlus-8635"; return; fi
-            if [ "$branch" = "oneplus/sm8650" ]; then echo "OnePlus-8650"; return; fi
-            if [ "$branch" = "oneplus/sm8735" ]; then echo "OnePlus-8735"; return; fi
-            if [ "$branch" = "oneplus/sm8750" ]; then echo "OnePlus-8750"; return; fi
-            if [ "$branch" = "oneplus/sm8845" ]; then echo "OnePlus-8845"; return; fi
-            if [ "$branch" = "oneplus/sm8850" ]; then echo "OnePlus-8850"; return; fi
+            if [ "$branch" = "oneplus/sm6375" ]; then echo "OnePlus-SM6375"; return; fi
+            if [ "$branch" = "oneplus/sm7550" ]; then echo "OnePlus-SM7550"; return; fi
+            if [ "$branch" = "oneplus/sm7635" ]; then echo "OnePlus-SM7635"; return; fi
+            if [ "$branch" = "oneplus/sm7675" ]; then echo "OnePlus-SM7675"; return; fi
+            if [ "$branch" = "oneplus/sm8450" ]; then echo "OnePlus-SM8450"; return; fi
+            if [ "$branch" = "oneplus/sm8475" ]; then echo "OnePlus-SM8475"; return; fi
+            if [ "$branch" = "oneplus/sm8550" ]; then echo "OnePlus-SM8550"; return; fi
+            if [ "$branch" = "oneplus/sm8635" ]; then echo "OnePlus-SM8635"; return; fi
+            if [ "$branch" = "oneplus/sm8650" ]; then echo "OnePlus-SM8650"; return; fi
+            if [ "$branch" = "oneplus/sm8735" ]; then echo "OnePlus-SM8735"; return; fi
+            if [ "$branch" = "oneplus/sm8750" ]; then echo "OnePlus-SM8750"; return; fi
+            if [ "$branch" = "oneplus/sm8845" ]; then echo "OnePlus-SM8845"; return; fi
+            if [ "$branch" = "oneplus/sm8850" ]; then echo "OnePlus-SM8850"; return; fi
 
-            # Generic kernel-manifest branch mapping.
-            # Example: oneplus/sm6375 -> OnePlus-6375.
+            # Generic Kernel-Manifest Branch Mapping
             if [[ "$branch" =~ ^oneplus/(sm|mt)([0-9]{4,5})$ ]]; then
               echo "OnePlus-${BASH_REMATCH[2]}"
               return
             fi
 
-            # Generic parser supports both:
-            #   oneplus/mtXXXX_...
-            #   oneplus_mtXXXX_...
-            # and SM equivalents.
+            # Generic Parser Supports Both SM and MT Equivalents
             if [[ "$branch" =~ ^(oneplus/|oneplus_)?(sm|mt)([0-9]{4,5})_(.+)$ ]]; then
               chipset="${BASH_REMATCH[2]}${BASH_REMATCH[3]}"
               short="${BASH_REMATCH[4]}"
@@ -458,7 +416,7 @@ jobs:
               version="${BASH_REMATCH[2]}"
               device="${BASH_REMATCH[4]}"
             else
-              # Legacy branches may use t/s before the Android version.
+              # Legacy Branches may use T/S Before the Android Version
               if [[ "$short" =~ ^(s|t)_([0-9]+\.[0-9]+(\.[0-9]+)?)_?(.*)$ ]]; then
                 variant="${BASH_REMATCH[1]}"
                 version="${BASH_REMATCH[2]}"
@@ -469,41 +427,40 @@ jobs:
               fi
             fi
 
-            # Normalize branch device slugs before matching so legacy
-            # branches containing OnePlus_11R_5G, etc. are handled.
+            # Normalize branch device slugs before matching so Legacy Branches are Handled
             device="$(printf '%s' "$device" | tr '[:upper:]' '[:lower:]')"
 
             case "$device" in
-              nord_ce4_lite_5g) mapped_device="Nord CE4 Lite 5G" ;;
-              nord_ce3_lite_5g) mapped_device="Nord CE3 Lite 5G" ;;
-              nord_ce4) mapped_device="Nord CE4" ;;
-              nord_ce6) mapped_device="Nord CE6" ;;
-              nord_3_5g) mapped_device="Nord 3 5G" ;;
-              nord_4|nord4) mapped_device="Nord 4" ;;
-              turbo_6v) mapped_device="Turbo 6V" ;;
-              ace_2v|ace2v) mapped_device="Ace 2V" ;;
-              ace_3v|ace3v) mapped_device="Ace 3V" ;;
-              ace_3_pro) mapped_device="Ace 3 Pro" ;;
-              ace_5_pro) mapped_device="Ace 5 Pro" ;;
-              ace_6) mapped_device="Ace 6" ;;
+              nord_ce4_lite_5g) mapped_device="NordCE4 Lite 5G" ;;
+              nord_ce3_lite_5g) mapped_device="NordCE3 Lite 5G" ;;
+              nord_ce4) mapped_device="NordCE4" ;;
+              nord_ce6) mapped_device="NordCE6" ;;
+              nord_3_5g) mapped_device="Nord3 5G" ;;
+              nord_4|nord4) mapped_device="Nord4" ;;
+              turbo_6v) mapped_device="Turbo6V" ;;
+              ace_2v|ace2v) mapped_device="Ace2V" ;;
+              ace_3v|ace3v) mapped_device="Ace3V" ;;
+              ace_3_pro) mapped_device="Ace3 Pro" ;;
+              ace_5_pro) mapped_device="Ace5 Pro" ;;
+              ace_6) mapped_device="Ace6" ;;
               ace_race) mapped_device="Ace Race" ;;
               ace_racing) mapped_device="Ace Racing" ;;
-              oneplus_13) mapped_device="OnePlus 13" ;;
-              oneplus_13s) mapped_device="OnePlus 13S" ;;
-              oneplus_13t) mapped_device="OnePlus 13T" ;;
-              oneplus_12) mapped_device="OnePlus 12" ;;
-              oneplus_11|oneplus11) mapped_device="OnePlus 11" ;;
-              oneplus_11r_5g|11r_5g) mapped_device="OnePlus 11R 5G" ;;
-              oneplus_10_pro|10_pro|10pro) mapped_device="OnePlus 10 Pro" ;;
-              oneplus_10t_5g|10t_5g) mapped_device="OnePlus 10T 5G" ;;
-              oneplus_10t|10t) mapped_device="OnePlus 10T" ;;
-              ace_2_pro|ace2pro) mapped_device="Ace 2 Pro" ;;
+              oneplus_13) mapped_device="13" ;;
+              oneplus_13s) mapped_device="13S" ;;
+              oneplus_13t) mapped_device="13T" ;;
+              oneplus_12) mapped_device="12" ;;
+              oneplus_11|oneplus11) mapped_device="11" ;;
+              oneplus_11r_5g|11r_5g) mapped_device="11R 5G" ;;
+              oneplus_10_pro|10_pro|10pro) mapped_device="10 Pro" ;;
+              oneplus_10t_5g|10t_5g) mapped_device="10T 5G" ;;
+              oneplus_10t|10t) mapped_device="10T" ;;
+              ace_2_pro|ace2pro) mapped_device="Ace2 Pro" ;;
               ace_pro) mapped_device="Ace Pro" ;;
-              oneplus_10r|10r) mapped_device="OnePlus 10R" ;;
-              oneplus_ace) mapped_device="OnePlus Ace" ;;
-              onepluspad|oneplus_pad) mapped_device="OnePlus Pad" ;;
-              pad_2_pro) mapped_device="Pad 2 Pro" ;;
-              pad_3) mapped_device="Pad 3" ;;
+              oneplus_10r|10r) mapped_device="10R" ;;
+              oneplus_ace) mapped_device="Ace" ;;
+              onepluspad|oneplus_pad) mapped_device="Pad" ;;
+              pad_2_pro) mapped_device="Pad2 Pro" ;;
+              pad_3) mapped_device="Pad3" ;;
               *)
                 mapped_device="$(printf '%s' "$device" | sed -E 's/^oneplus_//; s/_/ /g')"
                 mapped_device="$(printf '%s' "$mapped_device" | awk '{for(i=1;i<=NF;i++){$i=toupper(substr($i,1,1)) substr($i,2)} print}')"
@@ -516,48 +473,25 @@ jobs:
               "$version"
           }
 
-          # Determine the summary family.
-          #
-          # Every SM device goes into one SM section.
-          # Every MT device goes into one MT section.
-          #
-          # Example:
-          #
-          # SM8450
-          # SM8650
-          # SM8750
-          # SM8850
-          #
-          # all become:
-          #
-          # OnePlus-SM Devices
-          #
-          # Likewise all MT devices become:
-          #
-          # OnePlus-MT Devices
+          # Determine the Summary Family
           mapfamily() {
             case "$1" in
-
               android_kernel_oneplus_sm*|\
               android_kernel_common_oneplus_sm*)
                 echo "SM"
                 ;;
-
               android_kernel_oneplus_mt*|\
               android_kernel_common_oneplus_mt*|\
               android_kernel_4.19_oneplus_mt*)
                 echo "MT"
                 ;;
-
               kernel_manifest)
-                echo "MANIFEST"
+                echo "Manifest"
                 ;;
-
               *)
                 if printf '%s\n' "$1" |
                   grep -qiE '(sm|mt)[0-9]{4,5}'
                 then
-
                   if printf '%s\n' "$1" |
                     grep -qiE 'sm[0-9]{4,5}'
                   then
@@ -565,14 +499,10 @@ jobs:
                   else
                     echo "MT"
                   fi
-
                 else
-
                   echo "OTHER"
-
                 fi
                 ;;
-
             esac
           }
 
@@ -673,7 +603,7 @@ jobs:
           )"
 
           if [ -z "$REPOS" ]; then
-            echo "❌ Unable to retrieve OnePlusOSS repositories."
+            echo "⚠️ Unable to Retrieve OnePlusOSS Repositories"
             exit 1
           fi
 
@@ -683,17 +613,13 @@ jobs:
               wc -l
           )"
 
-          echo "📊 Found $TOTALREPOS repositories."
-
+          echo "📊 Found $TOTALREPOS Repositories"
           while IFS= read -r repo; do
-
             [ -z "$repo" ] && continue
-
             if explblacklisted "$repo"; then
-              echo "🚫 Skipping blacklisted repository: $repo"
+              echo "🚫 Skipping Blacklisted Repository: $repo"
               continue
             fi
-
             echo
             echo "📂 Processing: $repo"
 
@@ -722,17 +648,12 @@ jobs:
             FILESCANNED="false"
 
             while true; do
-
               PAGE=$((PAGE + 1))
               RESPONSE=""
               REQUESTOK="false"
-
               for attempt in $(seq 1 "$MAXRETRIES"); do
-
-                echo "  🌐 GraphQL page $PAGE, attempt $attempt/$MAXRETRIES"
-
+                echo "  🌐 GraphQL Page $PAGE, Attempt $attempt/$MAXRETRIES"
                 if [ -z "$CURSOR" ]; then
-
                   RESPONSE="$(
                     gh api graphql \
                       -f query="$ACTIVEQUERY" \
@@ -740,9 +661,7 @@ jobs:
                       -f name="$repo" \
                       2>&1
                   )" || true
-
                 else
-
                   RESPONSE="$(
                     gh api graphql \
                       -f query="$ACTIVEQUERY" \
@@ -762,16 +681,13 @@ jobs:
                    ' <<< "$RESPONSE" \
                    >/dev/null 2>&1
                 then
-
                   REQUESTOK="true"
                   break
 
                 fi
 
-                echo "  ⚠️ GraphQL request failed."
-
+                echo "⚠️ GraphQL Request Failed"
                 if [ -n "$RESPONSE" ]; then
-
                   ERRORS="$(
                     jq -r \
                       '.errors[]?.message // empty' \
@@ -791,20 +707,14 @@ jobs:
                 fi
 
                 if [ "$attempt" -lt "$MAXRETRIES" ]; then
-
                   RETRYWAIT=$((DELAYRETRIES * attempt))
-
-                  echo "  ⏳ Retrying in ${RETRYWAIT}s..."
-
+                  echo "⏳ Retrying in ${RETRYWAIT}s..."
                   sleep "$RETRYWAIT"
-
                 fi
-
               done
 
               if [ "$REQUESTOK" != "true" ]; then
-
-                echo "  ❌ Unable to retrieve page $PAGE for $repo."
+                echo "⚠️ Unable to Retrieve Page $PAGE for $repo"
 
                 FILESCANNED="false"
                 break
@@ -818,13 +728,10 @@ jobs:
               )"
 
               if [ -n "$PAGENODES" ]; then
-
                 if [ -n "$BRANCHDATA" ]; then
                   BRANCHDATA+=$'\n'
                 fi
-
                 BRANCHDATA+="$PAGENODES"
-
               fi
 
               HASNEXT="$(
@@ -840,36 +747,24 @@ jobs:
               )"
 
               if [ "$HASNEXT" != "true" ]; then
-
                 FILESCANNED="true"
                 break
-
               fi
 
               if [ -z "$NEXTCURSOR" ]; then
-
-                echo "  ❌ Pagination requested but no cursor was returned."
-
+                echo "⚠️ Pagination Requested but No Cursor was Returned"
                 FILESCANNED="false"
                 break
-
               fi
-
               CURSOR="$NEXTCURSOR"
-
             done
 
-            # Never overwrite valid previous state with an incomplete scan.
+            # Never Overwrite Valid Previous State with an Incomplete Scan
             if [ "$FILESCANNED" != "true" ]; then
-
               FAILEDREPOS=$((FAILEDREPOS + 1))
-
-              echo "  ⚠️ Scan failed: $repo"
-
+              echo "⚠️ Scan Failed: $repo"
               if [ "$OLDREPO" = "true" ]; then
-
-                echo "  🛡️ Preserving previous state."
-
+                echo "  🛡️ Preserving Previous State"
                 OLDREPOSTATE="$(
                   jq -c \
                     --arg repo "$repo" \
@@ -883,35 +778,23 @@ jobs:
                   '.[$repo] = $old' \
                   new-state.json \
                   > tmp.json
-
                 mv tmp.json new-state.json
-
               fi
-
               continue
-
             fi
 
             SCANNEDREPOS=$((SCANNEDREPOS + 1))
-
             if [ "$OLDREPO" = "false" ]; then
-
               NEWREPOS+="- 🆕 **$repo**"$'\n'
-
               DETECTEDCHANGE="true"
-
             fi
 
             printf '<details><summary><b>%s</b></summary>\n\n' "$repo" \
               >> "$TARGETQUERY"
-
             while IFS= read -r row; do
-
               [ -z "$row" ] && continue
-
               BRANCHNAME="$(jq -r '.name // empty' <<< "$row")"
               SHA="$(jq -r '.target.oid // empty' <<< "$row")"
-
               [ -z "$BRANCHNAME" ] && continue
               [ -z "$SHA" ] && continue
 
@@ -924,7 +807,6 @@ jobs:
               )"
 
               TOTALBRANCHES=$((TOTALBRANCHES + 1))
-
               OLDVALUE="$(
                 jq -r \
                   --arg repo "$repo" \
@@ -933,12 +815,11 @@ jobs:
                   "$STATEFILE"
               )"
 
-              STATUS="✅"
+              STATUS="🆗"
               KERNEL="N/A"
               CURRENTVALUE=""
 
               if [ "$repo" = "kernel_manifest" ]; then
-
                 JSONFILE="$(
                   jq -c '
                     (.target.tree.entries // [])
@@ -968,14 +849,11 @@ jobs:
                   printf '| :--- | :--- |\n'
 
                   while IFS=$'\t' read -r fname foid; do
-
                     [ -z "$fname" ] && continue
 
-                    FILESTATUS="✅"
+                    FILESTATUS="🆗"
                     OLDOID="NONE"
-
                     if [ "$OLDVALUE" != "NONE" ]; then
-
                       OLDFILES="$(
                         printf '%s' "$OLDVALUE" |
                           cut -d'|' -f2- |
@@ -989,7 +867,6 @@ jobs:
                           '.[$file] // "NONE"' \
                           <<< "$OLDFILES"
                       )"
-
                     fi
 
                     if [ "$OLDOID" = "NONE" ]; then
@@ -1001,7 +878,6 @@ jobs:
                     printf '| `%s` | %s |\n' \
                       "$fname" \
                       "$FILESTATUS"
-
                   done < <(
                     jq -r '
                       (.target.tree.entries // [])
@@ -1011,13 +887,9 @@ jobs:
                   )
 
                   printf '\n---\n\n'
-
                 } >> "$TARGETQUERY"
-
                 KERNEL="MANIFEST"
-
               else
-
                 MAKEFILE_TEXT="$(
                   jq -r \
                     '.target.file.object.text // empty' \
@@ -1025,7 +897,6 @@ jobs:
                 )"
 
                 if [ -n "$MAKEFILE_TEXT" ]; then
-
                   VERSION="$(
                     printf '%s\n' "$MAKEFILE_TEXT" |
                       grep -oE \
@@ -1055,15 +926,12 @@ jobs:
 
                   if [ -n "$VERSION" ] &&
                      [ -n "$PATCHLEVEL" ]; then
-
                     KERNEL="$VERSION.$PATCHLEVEL"
 
                     if [ -n "$SUBLEVEL" ]; then
                       KERNEL+=".${SUBLEVEL}"
                     fi
-
                   fi
-
                 fi
 
                 CURRENTVALUE="$SHA|$KERNEL"
@@ -1088,34 +956,25 @@ jobs:
 
               fi
 
-              if [ "$STATUS" != "✅" ]; then
-
+              if [ "$STATUS" != "🆗" ]; then
                 DETECTEDCHANGE="true"
-
                 if [ "$STATUS" = "🆕" ]; then
-
                   NEWBRANCHCOUNT=$((NEWBRANCHCOUNT + 1))
-
                   NEWBRANCH+="- ✨ **$repo** (\`$BRANCHNAME\`) → \`$KERNEL\`"$'\n'
-
                 else
-
                   UPDATEDBRANCHCOUNT=$((UPDATEDBRANCHCOUNT + 1))
-
                   UPDATEDBRANCH+="- 🔄 **$repo** (\`$BRANCHNAME\`) → \`$KERNEL\`"$'\n'
-
                 fi
-
               fi
 
-              # Determine family.
+              # Determine Family
               FAMILY="$(mapfamily "$repo")"
 
-              # Determine readable device/platform name.
+              # Determine Readable Device / Platform Name
               DISPLAYPLATFORM="$(mapplatform "$repo")"
 
-              # Display only the chipset in the Repo column.
-              # Keep the real repository name unchanged for API/state operations.
+              # Display Only the Chipset in the Repository Column
+              # Keep the Real Repository Name Unchanged for API / State Operations
               case "$repo" in
                 android_kernel_common_oneplus_sm*|android_kernel_oneplus_sm*)
                   CHIPSET="$(printf '%s\n' "$repo" | grep -oEi 'sm[0-9]{4,5}' | head -n1 | tr '[:lower:]' '[:upper:]' || true)"
@@ -1126,17 +985,16 @@ jobs:
                   DISPLAYREPO="${CHIPSET:-$repo}"
                   ;;
                 kernel_manifest)
-                  DISPLAYREPO="OnePlusOSS"
+                  DISPLAYREPO="Kernel Manifest"
                   ;;
                 *)
                   DISPLAYREPO="$repo"
                   ;;
               esac
 
-              # Map the branch name for the GitHub Summary.
+              # Map the Branch Name for the GitHub Summary
               DISPLAYBRANCH="$(mapbranch "$BRANCHNAME")"
               DISPLAYBRANCH="$(printf '%s' "$DISPLAYBRANCH" | tr '[:lower:]' '[:upper:]')"
-
               if [ "$SUMMARYROWS" -lt "$SUMMARYLIMIT" ]; then
                 ROW="$(
                   printf '| %s | %s | %s | `%s` | %s | %s |' \
@@ -1149,7 +1007,6 @@ jobs:
                 )"
 
                 PLATFORM_ROWS["$FAMILY"]+="${ROW}"$'\n'
-
                 FLATCOUNT["$FAMILY"]=$(( ${FLATCOUNT[$FAMILY]:-0} + 1 ))
                 SUMMARYROWS=$((SUMMARYROWS + 1))
               fi
@@ -1161,24 +1018,16 @@ jobs:
                 '.[$repo][$branch] = $value' \
                 new-state.json \
                 > tmp.json
-
               mv tmp.json new-state.json
-
             done <<< "$BRANCHDATA"
-
             printf '</details>\n\n' >> "$TARGETQUERY"
-
           done <<< "$REPOS"
 
           echo
-          echo "🧹 Checking deleted repositories and branches..."
-
+          echo "🧹 Checking Deleted Repositories and Branches..."
           while IFS= read -r old_repo; do
-
             [ -z "$old_repo" ] && continue
-
             if explblacklisted "$old_repo"; then
-
               OLDREPOSTATE="$(
                 jq -c \
                   --arg repo "$old_repo" \
@@ -1192,11 +1041,8 @@ jobs:
                 '.[$repo] = $old' \
                 new-state.json \
                 > tmp.json
-
               mv tmp.json new-state.json
-
               continue
-
             fi
 
             if jq -e \
@@ -1205,11 +1051,8 @@ jobs:
               new-state.json \
               >/dev/null 2>&1
             then
-
               while IFS= read -r old_branch; do
-
                 [ -z "$old_branch" ] && continue
-
                 if ! jq -e \
                   --arg repo "$old_repo" \
                   --arg branch "$old_branch" \
@@ -1217,14 +1060,11 @@ jobs:
                   new-state.json \
                   >/dev/null 2>&1
                 then
-
                   DELETEDCOUNT=$((DELETEDCOUNT + 1))
                   DETECTEDCHANGE="true"
-
                   DELETEDITEM+="- 🗑️ **Branch Deleted:** $old_repo (\`$old_branch\`)"$'\n'
-
                 fi
-
+             
               done < <(
                 jq -r \
                   --arg repo "$old_repo" \
@@ -1233,14 +1073,10 @@ jobs:
                   2>/dev/null ||
                   true
               )
-
             else
-
               DELETEDCOUNT=$((DELETEDCOUNT + 1))
               DETECTEDCHANGE="true"
-
               DELETEDITEM+="- 🗑️ **Repository Deleted:** $old_repo"$'\n'
-
             fi
 
           done < <(
@@ -1282,13 +1118,13 @@ jobs:
 
             echo "| Metric | Value |"
             echo "| :--- | ---: |"
-            echo "| Repositories discovered | $TOTALREPOS |"
-            echo "| Repositories scanned | $SCANNEDREPOS |"
-            echo "| Repositories failed | $FAILEDREPOS |"
-            echo "| Branches scanned | $TOTALBRANCHES |"
-            echo "| New branches | $NEWBRANCHCOUNT |"
-            echo "| Updated branches | $UPDATEDBRANCHCOUNT |"
-            echo "| Deleted items | $DELETEDCOUNT |"
+            echo "| Repositories Discovered | $TOTALREPOS |"
+            echo "| Repositories Scanned | $SCANNEDREPOS |"
+            echo "| Repositories Failed | $FAILEDREPOS |"
+            echo "| Branches Scanned | $TOTALBRANCHES |"
+            echo "| New Branches | $NEWBRANCHCOUNT |"
+            echo "| Updated Branches | $UPDATEDBRANCHCOUNT |"
+            echo "| Deleted Items | $DELETEDCOUNT |"
             echo
 
             echo "### 🌿 Branch Status & Kernel Versions"
@@ -1304,98 +1140,80 @@ jobs:
               echo "> **$COUNT branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Repository | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
 
-              # Sort SM rows by platform and repository.
+              # Sort SM Devices Rows by Platform and Repository
               printf '%s' "${PLATFORM_ROWS[SM]}" |
                 sort -t'|' -k3,3V -k2,2
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[MT]:-}" ]; then
-
               COUNT="${FLATCOUNT[MT]:-0}"
-
               echo "#### 📱 OnePlus-MT Devices"
               echo
 
               echo "> **$COUNT branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Repository | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
 
-              # Sort MT rows by platform and repository.
+              # Sort MT Devices Rows by Platform and Repository
               printf '%s' "${PLATFORM_ROWS[MT]}" |
                 sort -t'|' -k3,3V -k2,2
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[MANIFEST]:-}" ]; then
-
               COUNT="${FLATCOUNT[MANIFEST]:-0}"
-
               echo "#### 📋 Kernel Manifest"
               echo
 
               echo "> **$COUNT branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Repository | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
-
               printf '%s' "${PLATFORM_ROWS[MANIFEST]}"
-
               echo
-
             fi
 
             if [ -n "${PLATFORM_ROWS[OTHER]:-}" ]; then
-
               COUNT="${FLATCOUNT[OTHER]:-0}"
 
               echo "#### 📦 Other"
               echo
 
-              echo "> **$COUNT branch(s)**"
+              echo "> **$COUNT Branch(s)**"
               echo
 
-              echo "| Repo | Platform | Branch | Latest Commit | Kernel | Status |"
+              echo "| Repository | Platform | Branch | Latest Commit | Kernel | Status |"
               echo "| :--- | :--- | :--- | :--- | :--- | :--- |"
-
               printf '%s' "${PLATFORM_ROWS[OTHER]}"
-
               echo
-
             fi
 
             if [ "$SUMMARYROWS" -ge "$SUMMARYLIMIT" ]; then
 
               echo
-              echo "> ⚠️ Summary limited to the first $SUMMARYLIMIT branches."
-              echo "> Full data is available on the \`status-page\` branch."
-
+              echo "> ⚠️ Summary Limited to the First $SUMMARYLIMIT Branches"
+              echo "> Full Data is Available on the \`status-page\` Branch"
             fi
-
           } > "$GITHUB_STEP_SUMMARY"
-
           echo "changes_found=$DETECTEDCHANGE" >> "$GITHUB_OUTPUT"
 
           echo
           echo "📊 Scan Complete"
-          echo "Repositories discovered : $TOTALREPOS"
-          echo "Repositories scanned    : $SCANNEDREPOS"
-          echo "Repositories failed     : $FAILEDREPOS"
-          echo "Branches scanned        : $TOTALBRANCHES"
-          echo "New branches            : $NEWBRANCHCOUNT"
-          echo "Updated branches        : $UPDATEDBRANCHCOUNT"
-          echo "Deleted items           : $DELETEDCOUNT"
-          echo "Changes detected        : $DETECTEDCHANGE"
+          echo "Repositories Discovered : $TOTALREPOS"
+          echo "Repositories Scanned    : $SCANNEDREPOS"
+          echo "Repositories Failed     : $FAILEDREPOS"
+          echo "Branches Scanned        : $TOTALBRANCHES"
+          echo "New Branches            : $NEWBRANCHCOUNT"
+          echo "Updated Branches        : $UPDATEDBRANCHCOUNT"
+          echo "Deleted Items           : $DELETEDCOUNT"
+          echo "Changes Detected        : $DETECTEDCHANGE"
 
       - name: 🔔 Manage Notification Issue
         if: steps.scanner.outputs.changes_found == 'true'
@@ -1413,9 +1231,7 @@ jobs:
             true
 
           DATETITLE="Kernel Updates - $(date -u +'%Y-%m-%d')"
-
           RUNURL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
           if [ "$REPOSITORYOWNER" != "WildKernels" ]; then
             TARGET="@${REPOSITORYOWNER}"
           else
@@ -1428,7 +1244,7 @@ jobs:
           )"
 
           if [ -z "$LOGCONTENTS" ]; then
-            LOGCONTENTS="Changes were detected, but no notification details were generated."
+            LOGCONTENTS="Changes were Detected, but No Notification Details were Generated"
           fi
 
           ISSUENUMBER="$(
@@ -1442,7 +1258,6 @@ jobs:
           )"
 
           if [ -z "$ISSUENUMBER" ]; then
-
             BODY="$(
               printf '%s\n\n%s\n\n---\n🔗 [View Action Summary](%s)' \
                 "Hi $TARGET," \
@@ -1455,9 +1270,7 @@ jobs:
               --title "$DATETITLE" \
               --body "$BODY" \
               --label "notification"
-
           else
-
             BODY="$(
               printf '%s\n\n%s\n\n---\n🔗 [View Action Summary](%s)' \
                 "### 🔄 New Activity Detected ($(date -u +'%H:%M') UTC)" \
@@ -1469,7 +1282,6 @@ jobs:
               "$ISSUENUMBER" \
               --repo "${{ github.repository }}" \
               --body "$BODY"
-
           fi
 
       - name: 📄 Update Status Branch
@@ -1502,11 +1314,10 @@ jobs:
             >/dev/null 2>&1
           then
 
-            echo "✅ status-page branch exists."
+            echo "🚀 Status-Page Branch Exists"
 
-            # Configure Git authentication through GitHub CLI.
+            # Configure Git Authentication Through GitHub CLI
             gh auth setup-git
-
             git fetch \
               --quiet \
               origin \
@@ -1516,9 +1327,7 @@ jobs:
               --quiet \
               -B status-page \
               FETCH_HEAD
-
           else
-
             APIERROR="$(
               gh api \
                 "$STATUSAPI" \
@@ -1532,14 +1341,13 @@ jobs:
                 'Bad credentials|401|403|forbidden|Resource not accessible'
             then
 
-              echo "❌ Unable to access status-page."
+              echo "⚠️ Unable to Access Status-Page"
               printf '%s\n' "$APIERROR"
               exit 1
-
             fi
 
-            echo "ℹ️ status-page does not exist."
-            echo "ℹ️ Creating status-page branch."
+            echo "ℹ️ Status-Page does Not Exist"
+            echo "ℹ️ Creating Status-Page Branch"
 
             git checkout \
               --quiet \
@@ -1549,7 +1357,6 @@ jobs:
             git rm -rf . \
               >/dev/null 2>&1 ||
               true
-
           fi
 
           {
@@ -1557,7 +1364,7 @@ jobs:
             echo
             echo "> **Last Update:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo
-            echo "Automated monitoring report for OnePlusOSS Android kernel repositories."
+            echo "Automated Monitoring Report for OnePlusOSS Android Kernel Repositories"
             echo
             echo "---"
             echo
@@ -1566,7 +1373,6 @@ jobs:
             echo "---"
             echo
             cat ../local-summary.md
-
           } > README.md
 
           cp \
@@ -1574,33 +1380,27 @@ jobs:
             "$STATEFILE"
 
           git add README.md "$STATEFILE"
-
           if git diff --cached --quiet; then
-
-            echo "ℹ️ No status-page changes detected."
-
+            echo "ℹ️ No Status-Page Changes Detected.m"
             exit 0
-
           fi
 
           git commit \
             --quiet \
             -m "docs: sync OnePlusOSS kernel status [skip ci]"
 
-          # Configure Git authentication through GitHub CLI.
-          # GH_TOKEN is already provided by the workflow environment.
+          # Configure Git Authentication Through GitHub CLI
+          # Token is Already Provided by the Workflow Environment
           gh auth setup-git
-
-          echo "🚀 Pushing status-page..."
-
+          echo "🚀 Pushing Status-Page..."
           if git push \
             --quiet \
             origin \
             HEAD:status-page
           then
-            echo "✅ status-page updated successfully."
+            echo "🚀 Status-Page Updated Successfully"
           else
-            echo "❌ Failed to push status-page."
-            echo "ℹ️ Verify that workflow permissions include: contents: write."
+            echo "⚠️ Failed to Push Status-Page"
+            echo "ℹ️ Verify that Workflow Permissions Include: Contents: Write"
             exit 1
           fi
